@@ -9,43 +9,45 @@ using System.IO;
 using System.Data;
 using System.Data.OleDb;
 using System.Security.Cryptography;
-using ADOX; //Add Referance: Requires Microsoft ADO Ext. 2.8 for DDL and Security //https://www.microsoft.com/en-us/download/details.aspx?id=21995 //C:\Program Files\Common Files\System\ado\msadox.dll
+using ADOX; //NOTE: Add Referance: Requires Microsoft ADO Ext. 2.8 for DDL and Security //https://www.microsoft.com/en-us/download/details.aspx?id=21995 //C:\Program Files\Common Files\System\ado\msadox.dll
 using ADODB;
+//NOTE: Add Referance: Extensions > ADODB
 
-//Add Referance: Extensions > ADODB
-
-//using System.Data.Odbc;
 
 namespace MBCT.Access
 {
     /// <summary>
-    /// Hold onto lots of studio information to pass around
+    /// Hold onto lots of studio information to pass around while working with AccessTools.
     /// </summary>
     public class AccessReader : IDisposable
     {
         /// <summary>
-        /// 
+        /// If database file is an older legacy file, use Jet, otherwise use Ace connection string.
         /// </summary>
         public bool Legacy;
+        
         /// <summary>
-        /// 
+        /// Only used if password protected.
         /// </summary>
         public string UserId;
+        
         /// <summary>
-        /// 
+        /// Only used if password protected.
         /// </summary>
         public string Password;
+        
         /// <summary>
-        /// 
+        /// Path to the Access database file.
         /// </summary>
         public string Path;
+        
         /// <summary>
-        /// 
+        /// Default table name if any.
         /// </summary>
         public string TableName;
 
         /// <summary>
-        /// 
+        /// Initialize AccessReader with default values.
         /// </summary>
         public AccessReader()
         {
@@ -53,7 +55,7 @@ namespace MBCT.Access
         }
 
         /// <summary>
-        /// 
+        /// Initialize AccessReader with initial values.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="tablename"></param>
@@ -85,7 +87,7 @@ namespace MBCT.Access
 
         //public calls
         /// <summary>
-        /// 
+        /// Returns a DataTable with results from provided query.
         /// </summary>
         /// <param name="strQuery"></param>
         /// <returns></returns>
@@ -100,8 +102,9 @@ namespace MBCT.Access
                 return AccessTools.Reader(Path, TableName, Password, Legacy, UserId);
             }
         }
+        
         /// <summary>
-        /// 
+        /// Update database file based on provided query.
         /// </summary>
         /// <param name="strQuery"></param>
         /// <returns></returns>
@@ -111,7 +114,7 @@ namespace MBCT.Access
         }
 
         /// <summary>
-        /// 
+        /// Adds provided table to the database file.
         /// </summary>
         /// <param name="dt"></param>
         /// <param name="pb1"></param>
@@ -121,8 +124,9 @@ namespace MBCT.Access
             AccessTools.Writer(Path, dt, Password, pb1, Legacy, UserId);
             return 0;
         }
+        
         /// <summary>
-        /// 
+        /// Adds provided dataset tables to the database file.
         /// </summary>
         /// <param name="ds"></param>
         /// <param name="pb1"></param>
@@ -132,16 +136,18 @@ namespace MBCT.Access
             AccessTools.Writer(Path, ds, Password, pb1, Legacy, UserId);
             return 0;
         }
+        
         /// <summary>
-        /// 
+        /// Returns true if file extension matchs common file formats.
         /// </summary>
         /// <returns></returns>
         public bool IsAccess()
         {
             return AccessTools.IsAccess(Path);
         }
+        
         /// <summary>
-        /// 
+        /// Returns true if table exists. 
         /// </summary>
         /// <param name="tablename"></param>
         /// <returns></returns>
@@ -150,16 +156,18 @@ namespace MBCT.Access
             tablename = tablename == null ? TableName : tablename;
             return AccessTools.TableExists(Path, tablename);
         }
+        
         /// <summary>
-        /// 
+        /// Returns a list of tables.
         /// </summary>
         /// <returns></returns>
         public DataTable GetTableList()
         {
             return AccessTools.GetTableList(Path, Password);
         }
+        
         /// <summary>
-        /// 
+        /// Returns a list of the columns names in provided table name.
         /// </summary>
         /// <param name="tableName"></param>
         /// <returns></returns>
@@ -172,8 +180,9 @@ namespace MBCT.Access
 
             return AccessTools.GetTableColumnList(Path, tableName, Password);
         }
+        
         /// <summary>
-        /// 
+        /// Update given column name with new name.
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="tableName"></param>
@@ -185,17 +194,17 @@ namespace MBCT.Access
             return AccessTools.RenameColumn(Path, TableName, columnName, newColumnName);
         }
 
-        //Dispose
         /// <summary>
-        /// 
+        /// Dispose
         /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        
         /// <summary>
-        /// 
+        /// Dispose
         /// </summary>
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
